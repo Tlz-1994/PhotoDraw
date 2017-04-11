@@ -1,33 +1,32 @@
 require('normalize.css/normalize.css');
 require('styles/App.scss');
-
 import React from 'react';
 import ReactDOM from 'react-dom'
 
 let imageDatas = [
   {
     'fileName': '1.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer.'
   },
   {
     'fileName': '2.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer.'
   },
   {
     'fileName': '3.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer.'
   },
   {
     'fileName': '4.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer. '
   },
   {
     'fileName': '5.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer. '
   },
   {
@@ -72,12 +71,12 @@ let imageDatas = [
   },
   {
     'fileName': '14.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer.  '
   },
   {
     'fileName': '15.jpg',
-    'title': 'Heaven of time',
+    'title': 'Hi 王欣彤',
     'desc': 'Here he comes Here comes Speed Racer.  '
   },
   {
@@ -101,11 +100,14 @@ class ImgFigure extends React.Component {
     super(props)
   }
   componentDidMount() {
-    console.log(this.refs.imgFigure0);
   }
   render() {
+    var styleObj = {};
+    if (this.props.arrange.pos) {
+      styleObj = this.props.arrange.pos;
+    }
     return (
-      <figure className="img-figure">
+      <figure className="img-figure" style={styleObj} ref="figure">
         <img src={this.props.data.imageURL}
           alt={this.props.data.title}
         />
@@ -117,59 +119,124 @@ class ImgFigure extends React.Component {
   }
 }
 
+var Constant = {
+  centerPos: {
+    left: 0,
+    right: 0
+  },
+  hPosRange: {   // 水平方向的取值范围
+    leftSecX: [0, 0],
+    rightSecX: [0, 0],
+    y: [0, 0]
+  },
+  vPosRange: {    // 垂直方向的取值范围
+    x: [0, 0],
+    topY: [0, 0]
+  }
+}
+
 class AppComponent extends React.Component {
   constructor(props) {
     super(props)
-  }
-  Constant: {
-    centerPos: {
-      left: 0,
-      right: 0
-    },
-    hPosRange: {   // 水平方向的取值范围
-      leftSecX: [0, 0],
-      rightSecX: [0, 0],
-      y: [0, 0]
-    },
-    vPosRange: {    // 垂直方向的取值范围
-      x: [0, 0],
-      topY: [0, 0]
+    this.rangeRandom = this.rangeRandom.bind(this);
+    this.state = {
+        imgsArrangeArr: [
+          {
+            pos: {
+              left: 0,
+              top: 0
+            }
+          }
+        ]
     }
   }
   componentDidMount() {
-    var stageDOM = this.refs.stage,
+    var stageDOM = this.sectionBox,
         stageW = stageDOM.scrollWidth,
         stageH = stageDOM.scrollHeight,
         halfStageW = Math.ceil(stageW / 2),
-        halfStageH = Math.ceil(stageH / 2)
+        halfStageH = Math.ceil(stageH / 2);
 
-    var imgFigureDOM = this.refs.imgFigure0,
-        imgW = imgFigureDOM.scrollWidth,
-        imgH = imgFigureDOM.scrollHeight,
+    var imgFigureDom = this.refs.imgFigure0.refs.figure,
+        imgW = imgFigureDom.scrollWidth,
+        imgH = imgFigureDom.scrollHeight,
         halfImgW = Math.ceil(imgW / 2),
-        halfImgH = Math.ceil(imgW / 2)
+        halfImgH = Math.ceil(imgW / 2);
+        console.log(this.refs.imgFigure0.refs.figure);
 
-    console.log(imgH);
-    this.Constant.centerPods = {
+    Constant.centerPods = {
         left: halfStageW - halfImgW,
         top: halfStageH - halfImgH
-    }
+    };
 
-    this.Constant.hPosRange.leftSecx[0] = -halfImgW;
-    this.Constant.hPosRange.leftSecx[1] = halfStageW - halfImgW * 3;
-    this.Constant.hPosRange.rightSecx[0] = halfStageW - halfImgW;
-    this.Constant.hPosRange.rightSecx[1] = stageW - halfImgW;
-    this.Constant.hPosRange.y[0] = -halfImgH;
-    this.Constant.hPosRange.y[1] = stageH - halfImgH;
+    Constant.hPosRange.leftSecX[0] = -halfImgW;
+    Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
+    Constant.hPosRange.rightSecX[0] = halfStageW - halfImgW;
+    Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
+    Constant.hPosRange.y[0] = -halfImgH;
+    Constant.hPosRange.y[1] = stageH - halfImgH;
 
-    this.Constant.vPosRange.topY[0] = -halfImgH;
-    this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
-    this.Constant.vPosRange.x[0] = halfImgW - imgW;
-    this.Constant.vPosRange.x[1] = halfImgW;
+    Constant.vPosRange.topY[0] = -halfImgH;
+    Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
+    Constant.vPosRange.x[0] = halfImgW - imgW;
+    Constant.vPosRange.x[1] = halfImgW;
+
+    this.rearrange(0);
   }
 
   rearrange(centerIndex) {
+    var imgsArrangeArr = this.state.imgsArrangeArr;
+    var centerPos = Constant.centerPos;
+    var hPosRange = Constant.hPosRange;
+    var vPosRange = Constant.vPosRange;
+    var hPosRangeLeftSecX = hPosRange.leftSecX;
+    var hPosRangeRightSecX = hPosRange.rightSecX;
+    var hPosRangeY = hPosRange.y;
+    var vPosRangeTopY = vPosRange.topY;
+    var vPosRageX = vPosRange.x;
 
+    var imgsArrangeTopArr = [];
+    var topImgNum = Math.ceil(Math.random() * 2);
+    var topImgSpliceIndex = 0;
+    var imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
+
+    imgsArrangeCenterArr[0].pos = centerPos;
+    topImgSpliceIndex =  Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
+    imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
+
+    // 布局上部图片
+    imgsArrangeTopArr.forEach(function(value, index) {
+      imgsArrangeTopArr[index].pos = {
+        top: this.rangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
+        left: this.rangeRandom(vPosRageX[0], vPosRageX[1])
+      }
+    }.bind(this));
+
+    for(var i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
+      var hPosRangeLORX = null;
+      if (i<k) {
+          hPosRangeLORX = hPosRangeLeftSecX;
+      } else {
+          hPosRangeLORX = hPosRangeRightSecX;
+      }
+      imgsArrangeArr[i].pos = {
+        top: this.rangeRandom(hPosRangeY[0], hPosRangeY[1]),
+        left: this.rangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
+      }
+    }
+
+    if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
+      imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+    }
+    imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
+    this.setState ({
+      imgsArrangeArr: imgsArrangeArr
+    });
+    console.log(imgsArrangeArr);
+  }
+
+  rangeRandom (low, high) {
+    return Math.ceil(Math.random() * (high - low) + low);
   }
 
   render() {
@@ -177,11 +244,22 @@ class AppComponent extends React.Component {
     var imgFigures = [];
 
     imageDatas.forEach(function (value, index) {
-      imgFigures.push(<ImgFigure key={index} data={value} ref={"imgFigure" + index} />);
-    })
+      if (!this.state.imgsArrangeArr[index]) {
+        this.state.imgsArrangeArr[index] = {
+          pos: {
+            left: 0,
+            top: 0
+          }
+        }
+      }
+
+      imgFigures.push(<ImgFigure key={index} data={value} ref={"imgFigure"+index} arrange={this.state.imgsArrangeArr[index]} />);
+
+
+    }.bind(this))
 
     return (
-      <section className="stage" ref="stage">
+      <section className="stage" ref={(ref) => this.sectionBox = ref}>
         <section className="img-sec">
           {imgFigures}
         </section>
@@ -192,7 +270,6 @@ class AppComponent extends React.Component {
     );
   }
 }
-
 
 AppComponent.defaultProps = {
 };
