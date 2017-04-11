@@ -95,30 +95,6 @@ imageDatas = (function getImageUrl(imageDataArr) {
   return imageDataArr;
 })(imageDatas)
 
-class ImgFigure extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  componentDidMount() {
-  }
-  render() {
-    var styleObj = {};
-    if (this.props.arrange.pos) {
-      styleObj = this.props.arrange.pos;
-    }
-    return (
-      <figure className="img-figure" style={styleObj} ref="figure">
-        <img src={this.props.data.imageURL}
-          alt={this.props.data.title}
-        />
-        <figcaption>
-          <h2 className="img-title">{this.props.data.title}</h2>
-        </figcaption>
-      </figure>
-    );
-  }
-}
-
 var Constant = {
   centerPos: {
     left: 0,
@@ -145,7 +121,9 @@ class AppComponent extends React.Component {
             pos: {
               left: 0,
               top: 0
-            }
+            },
+            rotate: 0,
+            isInverse: false
           }
         ]
     }
@@ -164,22 +142,22 @@ class AppComponent extends React.Component {
         halfImgH = Math.ceil(imgW / 2);
         console.log(this.refs.imgFigure0.refs.figure);
 
-    Constant.centerPods = {
+    Constant.centerPos = {
         left: halfStageW - halfImgW,
         top: halfStageH - halfImgH
     };
 
     Constant.hPosRange.leftSecX[0] = -halfImgW;
     Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
-    Constant.hPosRange.rightSecX[0] = halfStageW - halfImgW;
+    Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
     Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
     Constant.hPosRange.y[0] = -halfImgH;
     Constant.hPosRange.y[1] = stageH - halfImgH;
 
     Constant.vPosRange.topY[0] = -halfImgH;
     Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
-    Constant.vPosRange.x[0] = halfImgW - imgW;
-    Constant.vPosRange.x[1] = halfImgW;
+    Constant.vPosRange.x[0] = halfStageW - imgW;
+    Constant.vPosRange.x[1] = halfStageW;
 
     this.rearrange(0);
   }
@@ -201,14 +179,20 @@ class AppComponent extends React.Component {
     var imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
     imgsArrangeCenterArr[0].pos = centerPos;
+    // 居中图片不旋转
+    imgsArrangeCenterArr[0].rotate = 0;
+
     topImgSpliceIndex =  Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
     imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
 
     // 布局上部图片
     imgsArrangeTopArr.forEach(function(value, index) {
-      imgsArrangeTopArr[index].pos = {
-        top: this.rangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
-        left: this.rangeRandom(vPosRageX[0], vPosRageX[1])
+      imgsArrangeTopArr[index] = {
+        pos : {
+          top: this.rangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
+          left: this.rangeRandom(vPosRageX[0], vPosRageX[1])
+        },
+        rotate: this.get30DegRandom()
       }
     }.bind(this));
 
@@ -219,9 +203,12 @@ class AppComponent extends React.Component {
       } else {
           hPosRangeLORX = hPosRangeRightSecX;
       }
-      imgsArrangeArr[i].pos = {
-        top: this.rangeRandom(hPosRangeY[0], hPosRangeY[1]),
-        left: this.rangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
+      imgsArrangeArr[i] = {
+        pos : {
+          top: this.rangeRandom(hPosRangeY[0], hPosRangeY[1]),
+          left: this.rangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
+        },
+        rotate: this.get30DegRandom()
       }
     }
 
@@ -232,11 +219,24 @@ class AppComponent extends React.Component {
     this.setState ({
       imgsArrangeArr: imgsArrangeArr
     });
-    console.log(imgsArrangeArr);
   }
 
   rangeRandom (low, high) {
     return Math.ceil(Math.random() * (high - low) + low);
+  }
+
+  get30DegRandom() {
+    return Math.random() > 0.5 ? Math.ceil(Math.random() * 30): -(Math.ceil(Math.random() * 30));
+  }
+
+  inverse(index) {
+    return function (){
+      var imgsArrangeArr = this.state.imgsArrangeArr;
+      imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+      this.setState({
+        imgsArrangeArr: imgsArrangeArr
+      });
+    }.bind(this);
   }
 
   render() {
@@ -249,11 +249,17 @@ class AppComponent extends React.Component {
           pos: {
             left: 0,
             top: 0
-          }
+          },
+          rotate: 0,
+          isInverse: false
         }
       }
 
-      imgFigures.push(<ImgFigure key={index} data={value} ref={"imgFigure"+index} arrange={this.state.imgsArrangeArr[index]} />);
+      imgFigures.push(<ImgFigure key={index} data={value}
+        ref={"imgFigure"+index}
+        arrange={this.state.imgsArrangeArr[index]}
+        inverse={this.inverse(index)}
+      />);
 
 
     }.bind(this))
@@ -267,6 +273,38 @@ class AppComponent extends React.Component {
           {controllerUnits}
         </nav>
       </section>
+    );
+  }
+}
+
+class ImgFigure extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  componentDidMount() {
+  }
+  render() {
+    var styleObj = {};
+    if (this.props.arrange.pos) {
+      styleObj = this.props.arrange.pos;
+    }
+    // 添加旋转角度
+    if (this.props.arrange.rotate) {
+      styleObj['transform'] = 'rotate('+ this.props.arrange.rotate + 'deg)'
+    }
+
+    var imgFigureClassName = 'img-figure';
+    imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
+
+    return (
+      <figure className={imgFigureClassName}style={styleObj} ref="figure" onClick={this.handleClick}>
+        <img src={this.props.data.imageURL}
+          alt={this.props.data.title}
+        />
+        <figcaption>
+          <h2 className="img-title">{this.props.data.title}</h2>
+        </figcaption>
+      </figure>
     );
   }
 }
