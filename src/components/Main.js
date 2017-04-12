@@ -7,7 +7,7 @@ let imageDatas = [
   {
     'fileName': '1.jpg',
     'title': 'frist image，hello',
-    'desc': 'Here he comes Here comes Speed Racer.'
+    'desc': '翻开就像刮刮乐'
   },
   {
     'fileName': '2.jpg',
