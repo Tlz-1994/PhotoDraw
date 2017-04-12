@@ -175,7 +175,7 @@ class AppComponent extends React.Component {
     var vPosRageX = vPosRange.x;
 
     var imgsArrangeTopArr = [];
-    var topImgNum = Math.ceil(Math.random() * 2);
+    var topImgNum = Math.ceil(Math.random());
     var topImgSpliceIndex = 0;
     var imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
@@ -277,6 +277,12 @@ class AppComponent extends React.Component {
         makeImgCenterShow={this.makeImgCenterShow(index)}
       />);
 
+      controllerUnits.push(<ControllerUnit
+         key={index}
+         arrange={this.state.imgsArrangeArr[index]}
+         inverse={this.inverse(index)}
+         makeImgCenterShow={this.makeImgCenterShow(index)}
+         />);
 
     }.bind(this))
 
@@ -319,7 +325,9 @@ class ImgFigure extends React.Component {
     }
     // 添加旋转角度
     if (this.props.arrange.rotate) {
-      styleObj['transform'] = 'rotate('+ this.props.arrange.rotate + 'deg)'
+      (['MozTransform', 'msTransform', 'WebKitTransform', 'transform']).forEach(function(value) {
+        styleObj[value] = 'rotate('+ this.props.arrange.rotate + 'deg)'
+      }.bind(this))
     }
     if (this.props.arrange.isCenter) {
       styleObj.zIndex = 11;
@@ -342,6 +350,35 @@ class ImgFigure extends React.Component {
           </div>
         </figcaption>
       </figure>
+    );
+  }
+}
+
+class ControllerUnit extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(e) {
+    if (this.props.arrange.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.makeImgCenterShow();
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  render() {
+    var controllerUnitClsaaName = "controller-unit";
+    if (this.props.arrange.isCenter) {
+      controllerUnitClsaaName += " is-center";
+    }
+    if (this.props.arrange.isInverse) {
+      controllerUnitClsaaName += " is-inverse";
+    }
+    console.log(controllerUnitClsaaName);
+    return (
+      <span className={controllerUnitClsaaName} onClick={this.handleClick} />
     );
   }
 }

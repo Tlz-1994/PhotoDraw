@@ -1,3 +1,9 @@
+
+@font-face {
+    font-family: "icons-turn-arrow";
+    src: url("../fonts/icons/turn-arrow.eot") format("embedded-opentype"), url("../fonts/icons/turn-arrow.woff") format("woff"), url("../fonts/icons/turn-arrow.ttf") format("truetype"), url("../fonts/icons/turn-arrow.svg") format("svg");
+  }
+
 html, body {
   width: 100%;
   height: 100%;
@@ -97,5 +103,46 @@ html, body {
   z-index: 101;
   width: 100%;
   text-align: center;
+
+  @at-root {
+    .controller-unit {
+      display: inline-block;
+      height: 28px;
+      width: 28px;
+      margin: 0 5px;
+      text-align: center;
+
+      vertical-align:middle;
+
+      cursor: pointer;
+
+      background-color: #aaa;
+      border-radius: 14px;
+
+      transform: scale(.5);
+      transition: transform .5s ease-in-out, background-color .3s;
+
+      &.is-center {
+        transform: scale(1);
+        background-color: #888888;
+        font-size: 70%;
+
+        &::after {
+          color: #fff;
+          font-family: "icons-turn-arrow";
+          line-height: 30px;
+          content: "\e600";
+
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      }
+
+      &.is-inverse {
+        color: #555;
+        transform: rotateY(180deg);
+      }
+    }
+  }
 }
 /* controller end */
