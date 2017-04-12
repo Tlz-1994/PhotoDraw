@@ -27,10 +27,11 @@ html, body {
   overflow: hidden;
   background-color: #ddd;
 
+  perspective: 1800px;
+
   @at-root {
     .img-figure {
       position: absolute;
-
 
       width: 320px;
       height: 360px;
@@ -40,6 +41,14 @@ html, body {
       background-color: #fff;
 
       box-sizing: border-box;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease-in-out, left 0.5s ease-in-out, top 0.5s ease-in-out;
+      transform-origin: left;
+
+      &.is-inverse {
+        transform: translate(320px) rotateY(180deg);
+      }
     }
     figcaption {
       text-align: center;
@@ -50,6 +59,31 @@ html, body {
 
         font-size: 16px;
       }
+      .img-back {
+          position: absolute;
+          top: 0;
+          left: 0;
+
+          width: 100%;
+          height: 100%;
+          padding: 50px 40px;
+          overflow: auto;
+
+          color: #a7a0a2;
+          font-size: 22px;
+          line-height: 1.25;
+          text-align: left;
+
+          background-color: #fff;
+
+          box-sizing: border-box;
+          transform: rotateY(180deg) translateZ(1px);
+          backface-visibility: hidden;
+
+          p {
+            margin: 0;
+          }
+        }
     }
   }
 }
