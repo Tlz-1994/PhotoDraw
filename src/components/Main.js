@@ -1,7 +1,6 @@
 require('normalize.css/normalize.css');
 require('styles/App.scss');
 import React from 'react';
-import ReactDOM from 'react-dom'
 
 let imageDatas = [
   {
@@ -140,8 +139,7 @@ class AppComponent extends React.Component {
         imgW = imgFigureDom.scrollWidth,
         imgH = imgFigureDom.scrollHeight,
         halfImgW = Math.ceil(imgW / 2),
-        halfImgH = Math.ceil(imgW / 2);
-        console.log(this.refs.imgFigure0.refs.figure);
+        halfImgH = Math.ceil(imgH / 2);
 
     Constant.centerPos = {
         left: halfStageW - halfImgW,
@@ -271,7 +269,7 @@ class AppComponent extends React.Component {
       }
 
       imgFigures.push(<ImgFigure key={index} data={value}
-        ref={"imgFigure"+index}
+        ref={'imgFigure'+index}
         arrange={this.state.imgsArrangeArr[index]}
         inverse={this.inverse(index)}
         makeImgCenterShow={this.makeImgCenterShow(index)}
@@ -369,14 +367,13 @@ class ControllerUnit extends React.Component {
     e.stopPropagation();
   }
   render() {
-    var controllerUnitClsaaName = "controller-unit";
+    var controllerUnitClsaaName = 'controller-unit';
     if (this.props.arrange.isCenter) {
-      controllerUnitClsaaName += " is-center";
+      controllerUnitClsaaName += ' is-center';
     }
     if (this.props.arrange.isInverse) {
-      controllerUnitClsaaName += " is-inverse";
+      controllerUnitClsaaName += ' is-inverse';
     }
-    console.log(controllerUnitClsaaName);
     return (
       <span className={controllerUnitClsaaName} onClick={this.handleClick} />
     );
