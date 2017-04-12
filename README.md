@@ -10,7 +10,10 @@ In the field of the react，i am a beginner，so，😁.
 - `npm start` or `npm run serve`
 - build assets`npn run dist`
 
-所用技术栈为 React、Webpack、SASS、ES6
+## tips
+- In China, the use of npm install may be slow, you can change to cnpm install
+
+create this project by React、Webpack、SASS、ES6.
 
 Star this repo if you like it！！！
 
