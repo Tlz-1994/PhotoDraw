@@ -4,8 +4,6 @@ In the field of the react，i am a beginner，so，😁.
 
 使用Yeoman generator for ReactJS and Webpack创建
 
-![](http://www.renwentech.com/wp-content/uploads/2016/11/react-gallery.jpg)
-
 ## how to use
 - clone this repo
 - npm install 
